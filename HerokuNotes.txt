@@ -1,0 +1,91 @@
+Force.com runs APEX and is designed for employee-facing applications. (e.g. Salesforce.com integrations/extensions – for sale in AppExchange)
+Heroku can run Java and is designed for customer-facing applications. (e.g. General cloud/web applications – competes with Amazon EC2, but w/o servers)
+
+Both can connect to Database.com for data storage.
+
+Heroku:
+
+- Must use Maven for builds/dependancies
+- Deploys to embedded Jetty/Tomcat (via Maven)
+- Source code and compiled assets must be < 100MB (assuming this includes jar dependancies…) recommended less than 10MB
+- Must use Git for source control and deployment
+- No sticky sessions
+- App must boot in 1 minute or less
+
+Thoughts…
+
+- Static asset hosting needs to be considered… Sounds like Amazon S3 is preferred?
+- Workflow is Mac-centric, Windows is currently a pain to use Git with and most dev tools are on Mac only.
+- Eclipse is becoming more and more flakey on Mac, also not Maven-centric.  IntelliJ Idea may be more appropriate.
+
+Add-ons:
+
+heroku addons:add custom_error_pages // Custom Error pages (beta)
+heroku addons:add custom_domains:basic // Custom domain with required sub domain
+
+* heroku addons:add rabbitmq:test // Beta RabbitMQ  
+
+* heroku addons:add cloudant:oxygen // 250MB CouchDB
+heroku addons:add mongolab:starter // 240MB MongoDB
+heroku addons:add redistogo:nano // 5MB Non-persistent Redis instance
+
+* heroku addons:add logging:expanded // 10k lines per minute, 500 lines history
+* heroku addons:add memcache:5mb // 5MB Memcache instance
+
+Maven
+
+<!-- LightCouch http://www.lightcouch.org/getstarted.html -->
+<dependency>
+  <groupId>org.lightcouch</groupId>
+  <artifactId>lightcouch</artifactId>
+  <version>0.0.4</version>
+</dependency>
+
+<!-- RabbitMQ http://www.rabbitmq.com/java-client.html -->
+<dependency>
+  <groupId>com.rabbitmq</groupId>
+  <artifactId>amqp-client</artifactId>
+  <version>2.7.0</version>
+</dependency>
+
+<!-- MemCache http://code.google.com/p/spymemcached/ -->
+<repositories>
+  <repository>
+    <id>spy</id>
+    <name>Spy Repository</name>
+    <layout>default</layout>
+    <url>http://files.couchbase.com/maven2/</url>
+    <snapshots>
+      <enabled>false</enabled>
+    </snapshots>
+  </repository>
+</repositories>
+...
+	<dependency>
+	    <groupId>spy</groupId>
+	    <artifactId>spymemcached</artifactId>
+	    <version>2.6</version>
+	    <scope>provided</scope>
+	</dependency>
+
+Postgres
+
+#Updated at Thu Oct 06 22:51:42 PDT 2011
+#Thu Oct 06 22:51:42 PDT 2011
+database.password=
+database.url=jdbc\:postgresql\://localhost\:5432
+database.username=
+database.driverClassName=org.postgresql.Driver
+
+/(index.html) 						- Home
+/lights/(index.html)				- Newest to oldest location list 				(API: atom|json)
+/lights/top-rated.html				- Highest to lowest location rating 			(API: atom|json)
+/lights/{numeric-id}.html			- Location display 								(API: xml|json)
+/top-rated.html						- Highest to lowest tour rating 				(API: atom|json)
+/generate.html						- Generate location-based tour, saves to id 	(API: xml|json)
+/build.html							- Build named tour 								(API: xml|json)
+/tours/(index.html)					- Newest to oldest tour list 					(API: atom|json)
+/tours/{slug|id}.html				- Tour display 									(API: xml|json)
+/account/(index.html)				- User's account display 						(API: xml|json)
+/account/edit.html					- Edit account 									(non-API?)
+/account/tours.html					- User's generated and built tours 				(API: atom|json)
