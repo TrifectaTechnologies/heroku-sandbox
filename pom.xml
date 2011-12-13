@@ -1,18 +1,25 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
-	<groupId>com.trifecta.heroku</groupId>
-	<version>1.0-SNAPSHOT</version>
-	<artifactId>lightrate</artifactId>
-	<name>Holiday Light Rating Application (Heroku/Cedar Stack Java example)</name>
+    <groupId>com.trifecta.heroku</groupId>
+    <version>1.0-SNAPSHOT</version>
+    <artifactId>lightrate</artifactId>
+    <name>Holiday Light Rating Application (Heroku/Cedar Stack Java example)</name>
+
     <properties>
-        <roo.version>1.1.5.RELEASE</roo.version>
-        <spring.version>3.0.6.RELEASE</spring.version>
-        <aspectj.version>1.6.11</aspectj.version>
-        <slf4j.version>1.6.1</slf4j.version>
+        <spring.version>3.1.0.RELEASE</spring.version>
         <jetty.version>7.4.5.v20110725</jetty.version>
+        <cglib.version>2.2</cglib.version>
+        <slf4j.version>1.6.4</slf4j.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.build.javaVersion>1.6</project.build.javaVersion>
+
+        <aspectj.version>1.6.11</aspectj.version>
     </properties>
+
     <repositories>
         <repository>
             <id>spring-maven-release</id>
@@ -24,21 +31,21 @@
             <name>Spring Maven Milestone Repository</name>
             <url>http://maven.springframework.org/milestone</url>
         </repository>
-    <repository>
+        <repository>
             <id>JBoss Repo</id>
             <url>https://repository.jboss.org/nexus/content/repositories/releases</url>
             <name>JBoss Repo</name>
         </repository>
-			<!-- Repository to support SpyMemcached library -->
-			<repository>
-				<id>spy</id>
-				<name>Spy Repository</name>
-				<layout>default</layout>
-				<url>http://files.couchbase.com/maven2/</url>
-				<snapshots>
-					<enabled>false</enabled>
-				</snapshots>
-			</repository>
+        <!-- Repository to support SpyMemcached library -->
+        <repository>
+            <id>spy</id>
+            <name>Spy Repository</name>
+            <layout>default</layout>
+            <url>http://files.couchbase.com/maven2/</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
     </repositories>
     <pluginRepositories>
         <pluginRepository>
@@ -52,14 +59,155 @@
             <url>http://maven.springframework.org/milestone</url>
         </pluginRepository>
     </pluginRepositories>
+
     <dependencies>
-        <!-- General dependencies for standard applications -->
+
+        <!-- Application Dependencies -->
+
+        <!-- MemCache client http://code.google.com/p/spymemcached/ -->
+        <dependency>
+            <groupId>spy</groupId>
+            <artifactId>spymemcached</artifactId>
+            <version>2.6</version>
+        </dependency>
+
+        <!-- RabbitMQ client http://www.rabbitmq.com/java-client.html -->
+        <dependency>
+            <groupId>com.rabbitmq</groupId>
+            <artifactId>amqp-client</artifactId>
+            <version>2.7.0</version>
+        </dependency>
+
+        <!-- LightCouch CouchDB client http://www.lightcouch.org/getstarted.html -->
+        <dependency>
+            <groupId>org.lightcouch</groupId>
+            <artifactId>lightcouch</artifactId>
+            <version>0.0.4</version>
+        </dependency>
+
+        <!-- OAuth https://github.com/fernandezpablo85/scribe-java -->
+        <dependency>
+            <groupId>org.scribe</groupId>
+            <artifactId>scribe</artifactId>
+            <version>1.2.3</version>
+        </dependency>
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency> <!-- Bridge commons-logging to slf4j -->
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency> <!-- Use Log4J to do the actual logging -->
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+
+        <!-- Spring Dependencies -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+            <version>${spring.version}</version>
+            <exclusions>
+                <exclusion>
+                    <artifactId>commons-logging</artifactId>
+                    <groupId>commons-logging</groupId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>cglib</groupId>
+            <artifactId>cglib-nodep</artifactId>
+            <version>${cglib.version}</version>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Test Scope -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.8.2</version>
             <scope>test</scope>
         </dependency>
+
+        <!-- Heroku Dependencies -->
+        <dependency>
+            <groupId>org.eclipse.jetty</groupId>
+            <artifactId>jetty-servlet</artifactId>
+            <version>${jetty.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <version>2.5</version>
+        </dependency>
+
+        <!-- Runtime Dependencies -->
+        <dependency>
+            <groupId>postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>8.4-702.jdbc3</version>
+            <scope>runtime</scope>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>appassembler-maven-plugin</artifactId>
+                <version>1.1.1</version>
+                <executions>
+                    <execution>
+                        <phase>package</phase>
+                        <goals><goal>assemble</goal></goals>
+                        <configuration>
+                            <assembleDirectory>target</assembleDirectory>
+                            <programs>
+                                <program>
+                                    <mainClass>com.trifecta.examples.heroku.Main</mainClass>
+                                    <name>webapp</name>
+                                </program>
+                            </programs>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>2.3.2</version>
+                <configuration>
+                    <source>${project.build.javaVersion}</source>
+                    <target>${project.build.javaVersion}</target>
+                    <encoding>${project.build.sourceEncoding}</encoding>
+                </configuration>
+            </plugin>
+
+        </plugins>
+    </build>
+</project>
+
+<!--
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+
+
+
+
+
+    <dependencies>
         <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
@@ -96,8 +244,6 @@
             <version>2.5</version>
             <scope>provided</scope>
         </dependency>
-
-        <!-- Spring dependencies -->
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-core</artifactId>
@@ -145,7 +291,6 @@
             <groupId>org.hibernate</groupId>
             <artifactId>hibernate-validator</artifactId>
             <version>4.1.0.Final</version>
-            <classifier/>
             <exclusions>
                 <exclusion>
                     <groupId>javax.xml.bind</groupId>
@@ -161,37 +306,31 @@
             <groupId>javax.validation</groupId>
             <artifactId>validation-api</artifactId>
             <version>1.0.0.GA</version>
-            <classifier/>
         </dependency>
         <dependency>
             <groupId>cglib</groupId>
             <artifactId>cglib-nodep</artifactId>
             <version>2.2</version>
-            <classifier/>
         </dependency>
         <dependency>
             <groupId>javax.transaction</groupId>
             <artifactId>jta</artifactId>
             <version>1.1</version>
-            <classifier/>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-jdbc</artifactId>
             <version>${spring.version}</version>
-            <classifier/>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
             <artifactId>spring-orm</artifactId>
             <version>${spring.version}</version>
-            <classifier/>
         </dependency>
         <dependency>
             <groupId>commons-pool</groupId>
             <artifactId>commons-pool</artifactId>
             <version>1.5.4</version>
-            <classifier/>
             <exclusions>
                 <exclusion>
                     <groupId>commons-logging</groupId>
@@ -203,7 +342,6 @@
             <groupId>commons-dbcp</groupId>
             <artifactId>commons-dbcp</artifactId>
             <version>1.3</version>
-            <classifier/>
             <exclusions>
                 <exclusion>
                     <groupId>commons-logging</groupId>
@@ -231,7 +369,6 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-web</artifactId>
             <version>${spring.version}</version>
-            <classifier/>
             <exclusions>
                 <exclusion>
                     <groupId>commons-logging</groupId>
@@ -243,7 +380,6 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-webmvc</artifactId>
             <version>${spring.version}</version>
-            <classifier/>
             <exclusions>
                 <exclusion>
                     <groupId>commons-logging</groupId>
@@ -255,7 +391,6 @@
             <groupId>commons-digester</groupId>
             <artifactId>commons-digester</artifactId>
             <version>2.0</version>
-            <classifier/>
             <exclusions>
                 <exclusion>
                     <groupId>commons-logging</groupId>
@@ -267,7 +402,6 @@
             <groupId>commons-fileupload</groupId>
             <artifactId>commons-fileupload</artifactId>
             <version>1.2.1</version>
-            <classifier/>
             <exclusions>
                 <exclusion>
                     <groupId>commons-logging</groupId>
@@ -279,73 +413,35 @@
             <groupId>javax.servlet.jsp.jstl</groupId>
             <artifactId>jstl-api</artifactId>
             <version>1.2</version>
-            <classifier/>
         </dependency>
         <dependency>
             <groupId>org.glassfish.web</groupId>
             <artifactId>jstl-impl</artifactId>
             <version>1.2</version>
-            <classifier/>
         </dependency>
         <dependency>
             <groupId>javax.el</groupId>
             <artifactId>el-api</artifactId>
             <version>1.0</version>
             <scope>provided</scope>
-            <classifier/>
         </dependency>
         <dependency>
             <groupId>javax.servlet.jsp</groupId>
             <artifactId>jsp-api</artifactId>
             <version>2.1</version>
             <scope>provided</scope>
-            <classifier/>
         </dependency>
         <dependency>
             <groupId>commons-codec</groupId>
             <artifactId>commons-codec</artifactId>
             <version>1.4</version>
-            <classifier/>
         </dependency>
-    	<dependency>
-            <groupId>postgresql</groupId>
-            <artifactId>postgresql</artifactId>
-            <version>8.4-702.jdbc3</version>
-            <classifier/>
-        </dependency>
-
-		<!-- Heroku Dependancies -->
 		<dependency>
 			<groupId>org.eclipse.jetty</groupId>
 			<artifactId>jetty-servlet</artifactId>
 			<version>${jetty.version}</version>
 		</dependency>
 
-		<!-- MemCache client http://code.google.com/p/spymemcached/ -->
-		<dependency>
-			<groupId>spy</groupId>
-			<artifactId>spymemcached</artifactId>
-			<version>2.6</version>
-			<scope>provided</scope>
-		</dependency>
-		<!-- RabbitMQ client http://www.rabbitmq.com/java-client.html -->
-		<dependency>
-			<groupId>com.rabbitmq</groupId>
-			<artifactId>amqp-client</artifactId>
-			<version>2.7.0</version>
-		</dependency>
-		<!-- LightCouch CouchDB client http://www.lightcouch.org/getstarted.html -->
-		<dependency>
-			<groupId>org.lightcouch</groupId>
-			<artifactId>lightcouch</artifactId>
-			<version>0.0.4</version>
-		</dependency>
-		<!-- OAuth https://github.com/fernandezpablo85/scribe-java -->
-		<dependency>
-			<groupId>org.scribe</groupId>
-			<artifactId>scribe</artifactId>
-			<version>1.2.3</version>
-		</dependency>
     </dependencies>
     <build>
         <plugins>
@@ -353,7 +449,6 @@
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-war-plugin</artifactId>
                 <version>2.1.1</version>
-                <!-- <configuration> <webXml>target/web.xml</webXml> </configuration> -->
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -397,11 +492,10 @@
                 <artifactId>maven-deploy-plugin</artifactId>
                 <version>2.6</version>
             </plugin>
-            <!-- IDE -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-eclipse-plugin</artifactId>
-                <version>2.7</version>  <!-- Note 2.8 does not work with AspectJ aspect path -->
+                <version>2.7</version>
                 <configuration>
                     <downloadSources>true</downloadSources>
                     <downloadJavadocs>false</downloadJavadocs>
@@ -465,4 +559,4 @@
             </plugin>
         </plugins>
     </build>
-</project>
+</project>  -->
