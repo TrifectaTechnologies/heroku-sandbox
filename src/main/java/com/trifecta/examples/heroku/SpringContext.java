@@ -39,7 +39,6 @@ import java.util.Collections;
 public class SpringContext {
 
     // Begin Memcached Client Configuration
-/*
     @Bean
     public PlainCallbackHandler getMemcachedPlainCallbackHandler() {
         return new PlainCallbackHandler(System.getenv("MEMCACHE_USERNAME"), System.getenv("MEMCACHE_PASSWORD"));
@@ -69,7 +68,6 @@ public class SpringContext {
                         Collections.singletonList(getServerMemcachedAddress()));
         return memcachedClient;
     }
-*/
     // End Memcached Client Configuration
 
 
