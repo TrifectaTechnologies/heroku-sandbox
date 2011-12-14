@@ -34,7 +34,6 @@ public class SpringContext {
 
     @Bean
     public PlainCallbackHandler getMemcachedPlainCallbackHandler() {
-        log.info("Credentials: "+System.getenv("MEMCACHE_USERNAME")+"/"+System.getenv("MEMCACHE_PASSWORD"));
         return new PlainCallbackHandler(System.getenv("MEMCACHE_USERNAME"), System.getenv("MEMCACHE_PASSWORD"));
     }
 
