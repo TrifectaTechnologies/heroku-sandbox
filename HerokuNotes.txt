@@ -92,7 +92,7 @@ database.driverClassName=org.postgresql.Driver
 /account/edit.html					- Edit account 									(non-API?)
 /account/tours.html					- User's generated and built tours 				(API: atom|json)
 
-
+git push heroku master
 
 Environment Setup:
 
