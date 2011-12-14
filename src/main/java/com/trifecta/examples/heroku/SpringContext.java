@@ -9,6 +9,7 @@ import net.spy.memcached.auth.PlainCallbackHandler;
 import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.lightcouch.CouchDbClient;
 import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
@@ -37,8 +38,11 @@ import java.util.Collections;
 @EnableWebMvc
 @ComponentScan(basePackages = "com.trifecta.examples.heroku")
 public class SpringContext {
+    
+    Log log = LogFactory.getLog(SpringContext.class);
 
     // Begin Memcached Client Configuration
+    /*
     @Bean
     public PlainCallbackHandler getMemcachedPlainCallbackHandler() {
         return new PlainCallbackHandler(System.getenv("MEMCACHE_USERNAME"), System.getenv("MEMCACHE_PASSWORD"));
@@ -68,6 +72,7 @@ public class SpringContext {
                         Collections.singletonList(getServerMemcachedAddress()));
         return memcachedClient;
     }
+    */
     // End Memcached Client Configuration
 
 
@@ -115,4 +120,36 @@ public class SpringContext {
     }
 
     // End RabbitMQ Configuration
+
+    // Begin CouchDB Configuration
+    // <bean id="dbClient" class="org.lightcouch.CouchDbClient" destroy-method="shutdown"/>
+
+    @Bean
+    public URI getCouchUrl() throws URISyntaxException {
+        return new URI(System.getenv("CLOUDANT_URL"));
+    }
+
+    @Bean
+    public CouchDbClient couchDbClient() throws URISyntaxException {
+        
+        String dbName = "lightrate";
+        boolean createDbIfNotExist = true;
+        String protocol = getCouchUrl().getScheme();
+        String host = getCouchUrl().getHost();
+        int port = getCouchUrl().getScheme().equals("https") ? 443 : ( getCouchUrl().getScheme().equals("http") ? 80 : 5984 );
+        if( getCouchUrl().getPort() != -1 ) {
+            port = getCouchUrl().getPort();
+        }
+        log.info( "Port: '" + port + "'" );
+        String username = "";
+        String password = "";
+        if( getCouchUrl().getUserInfo() != null ) {
+            username = getCouchUrl().getUserInfo().split(":")[0];
+            password = getCouchUrl().getUserInfo().split(":")[1];
+        }
+
+        return new CouchDbClient(dbName,createDbIfNotExist,protocol,host,port,username,password);
+    }
+
+    // End CouchDB Configuration
 }
