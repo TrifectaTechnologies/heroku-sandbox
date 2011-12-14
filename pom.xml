@@ -77,6 +77,11 @@
             <artifactId>amqp-client</artifactId>
             <version>2.7.0</version>
         </dependency>
+        <dependency>
+            <groupId>org.springframework.amqp</groupId>
+            <artifactId>spring-rabbit</artifactId>
+            <version>1.0.0.RELEASE</version>
+        </dependency>
 
         <!-- LightCouch CouchDB client http://www.lightcouch.org/getstarted.html -->
         <dependency>
@@ -90,6 +95,13 @@
             <groupId>org.scribe</groupId>
             <artifactId>scribe</artifactId>
             <version>1.2.3</version>
+        </dependency>
+
+        <!-- PostgreSQL Datasource -->
+        <dependency>
+            <groupId>commons-dbcp</groupId>
+            <artifactId>commons-dbcp</artifactId>
+            <version>1.3</version>
         </dependency>
 
         <!-- Logging -->

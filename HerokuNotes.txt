@@ -112,5 +112,9 @@ brew install rabbitmq
 
 Install Postgres SQL:
 
-brew install postgressql
+brew install postgresql
+createdb -h localhost heroku-lightrate
+psql -h localhost heroku-lightrate
+heroku-lightrate=> CREATE USER heroku WITH PASSWORD 'heroku';
+heroku-lightrate=> GRANT ALL PRIVILEGES ON DATABASE heroku-lightrate to heroku;
 
