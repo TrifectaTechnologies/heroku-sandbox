@@ -187,6 +187,10 @@
                                     <mainClass>com.trifecta.examples.heroku.Main</mainClass>
                                     <name>webapp</name>
                                 </program>
+                                <program>
+                                    <mainClass>com.trifecta.examples.heroku.worker.RabbitWorker</mainClass>
+                                    <name>rabbitWorker</name>
+                                </program>
                             </programs>
                         </configuration>
                     </execution>
