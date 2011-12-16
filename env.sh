@@ -1,7 +1,9 @@
 #!/bin/bash
+export MEMCACHE_SERVERS="memcached.trifecta.com"
 export MEMCACHE_SERVERS="localhost"
-export MEMCACHE_USERNAME="username"
-export MEMCACHE_PASSWORD="password"
+export MEMCACHE_USERNAME="cacheuser"
+export MEMCACHE_SKIP_AUTHENTICATE="true"
+export MEMCACHE_PASSWORD="trifecta00"
 export CLOUDANT_URL="http://localhost:5984"
 export RABBITMQ_URL="amqp://localhost/"
 export DATABASE_URL="postgres://heroku:heroku@localhost/heroku-lightrate"

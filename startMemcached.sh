@@ -1,2 +1,2 @@
 #!/bin/bash
-memcached -vvv -S
+memcached -vvv

@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class MemcachedTestController {
 
-    //@Autowired
+    @Autowired
     MemcachedClient memcachedClient;
 
     @RequestMapping(value="cache/",method= RequestMethod.GET)

@@ -42,7 +42,6 @@ public class SpringContext {
     Log log = LogFactory.getLog(SpringContext.class);
 
     // Begin Memcached Client Configuration
-    /*
     @Bean
     public PlainCallbackHandler getMemcachedPlainCallbackHandler() {
         return new PlainCallbackHandler(System.getenv("MEMCACHE_USERNAME"), System.getenv("MEMCACHE_PASSWORD"));
@@ -56,7 +55,13 @@ public class SpringContext {
     @Bean
     public ConnectionFactory getConnectionMemcachedFactory() {
         ConnectionFactoryBuilder factoryBuilder = new ConnectionFactoryBuilder();
-        return factoryBuilder.setProtocol(Protocol.BINARY).setAuthDescriptor(getMemcachedAuthDescriptor()).build();
+        factoryBuilder.setProtocol(Protocol.BINARY);
+        
+        if( !new Boolean( System.getenv("MEMCACHE_SKIP_AUTHENTICATE") ).booleanValue() ) {
+            factoryBuilder.setAuthDescriptor(getMemcachedAuthDescriptor());
+        }
+        
+        return factoryBuilder.build();
     }
 
     @Bean
@@ -72,7 +77,6 @@ public class SpringContext {
                         Collections.singletonList(getServerMemcachedAddress()));
         return memcachedClient;
     }
-    */
     // End Memcached Client Configuration
 
 
