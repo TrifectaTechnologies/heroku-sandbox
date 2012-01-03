@@ -11,6 +11,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.lightcouch.CouchDbClient;
 import org.springframework.amqp.core.AmqpAdmin;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.Queue;
 import org.springframework.amqp.rabbit.connection.CachingConnectionFactory;
 import org.springframework.amqp.rabbit.core.RabbitAdmin;
@@ -57,9 +58,9 @@ public class SpringContext {
         ConnectionFactoryBuilder factoryBuilder = new ConnectionFactoryBuilder();
         factoryBuilder.setProtocol(Protocol.BINARY);
         
-        if( !new Boolean( System.getenv("MEMCACHE_SKIP_AUTHENTICATE") ).booleanValue() ) {
+        //if( !new Boolean( System.getenv("MEMCACHE_SKIP_AUTHENTICATE") ).booleanValue() ) {
             factoryBuilder.setAuthDescriptor(getMemcachedAuthDescriptor());
-        }
+        //}
         
         return factoryBuilder.build();
     }
@@ -103,8 +104,13 @@ public class SpringContext {
     // Begin RabbitMQ Configuration
 
     @Bean
+    public URI getAmqpUrl() throws URISyntaxException {
+        return new URI(System.getenv("RABBITMQ_URL"));
+    }
+    
+    @Bean
     public org.springframework.amqp.rabbit.connection.ConnectionFactory getRabbitConnectionFactory() throws NoSuchAlgorithmException, KeyManagementException, URISyntaxException {
-        org.springframework.amqp.rabbit.connection.ConnectionFactory connectionFactory = new CachingConnectionFactory(System.getenv("RABBITMQ_URL"));
+        org.springframework.amqp.rabbit.connection.ConnectionFactory connectionFactory = new CachingConnectionFactory(getAmqpUrl().getHost());
         return connectionFactory;
     }
 
@@ -114,7 +120,7 @@ public class SpringContext {
     }
 
     @Bean
-    public RabbitTemplate rabbitTemplate() throws NoSuchAlgorithmException, KeyManagementException, URISyntaxException {
+    public AmqpTemplate amqpTemplate() throws NoSuchAlgorithmException, KeyManagementException, URISyntaxException {
         return new RabbitTemplate(getRabbitConnectionFactory());
     }
 
@@ -126,14 +132,13 @@ public class SpringContext {
     // End RabbitMQ Configuration
 
     // Begin CouchDB Configuration
-    // <bean id="dbClient" class="org.lightcouch.CouchDbClient" destroy-method="shutdown"/>
 
     @Bean
     public URI getCouchUrl() throws URISyntaxException {
         return new URI(System.getenv("CLOUDANT_URL"));
     }
 
-    @Bean
+    @Bean(destroyMethod = "shutdown")
     public CouchDbClient couchDbClient() throws URISyntaxException {
         
         String dbName = "lightrate";

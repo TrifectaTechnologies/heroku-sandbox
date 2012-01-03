@@ -22,7 +22,6 @@ public class DatabaseTestController {
     @Autowired
     private DataSource dataSource;
 
-
     @RequestMapping(value="db/",method= RequestMethod.GET)
     @ResponseBody
     public final String getDb() throws SQLException {
