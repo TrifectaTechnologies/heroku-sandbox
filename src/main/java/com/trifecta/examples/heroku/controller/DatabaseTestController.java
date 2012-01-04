@@ -1,5 +1,6 @@
 package com.trifecta.examples.heroku.controller;
 
+import com.trifecta.examples.heroku.service.TestService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,23 +21,19 @@ import java.sql.Statement;
 public class DatabaseTestController {
 
     @Autowired
-    private DataSource dataSource;
+    private TestService testService;
 
     @RequestMapping(value="db/",method= RequestMethod.GET)
     @ResponseBody
     public final String getDb() throws SQLException {
-
-        Statement stmt = dataSource.getConnection().createStatement();
-        stmt.executeUpdate("DROP TABLE IF EXISTS ticks");
-        stmt.executeUpdate("CREATE TABLE ticks (tick timestamp)");
-        stmt.executeUpdate("INSERT INTO ticks VALUES (now())");
-        ResultSet rs = stmt.executeQuery("SELECT tick FROM ticks");
         
         StringBuffer output = new StringBuffer("Database Test...<br/>");
+
+        output.append("Last tick: " + testService.getTick() + "<br/>");
+
+        testService.tick();
         
-        while (rs.next()) {
-            output.append("Read from DB: " + rs.getTimestamp("tick") + "<br/>");
-        }
+        output.append("New tick: " + testService.getTick());
 
         return output.toString();
     }

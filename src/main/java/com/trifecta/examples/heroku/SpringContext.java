@@ -10,6 +10,8 @@ import org.apache.commons.dbcp.BasicDataSource;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.lightcouch.CouchDbClient;
+import org.mybatis.spring.SqlSessionFactoryBean;
+import org.mybatis.spring.mapper.MapperScannerConfigurer;
 import org.springframework.amqp.core.AmqpAdmin;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.Queue;
@@ -19,6 +21,13 @@ import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
+import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
+import org.springframework.jdbc.datasource.DataSourceTransactionManager;
+import org.springframework.transaction.PlatformTransactionManager;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 
 import java.io.IOException;
@@ -37,6 +46,7 @@ import java.util.Collections;
 
 @Configuration
 @EnableWebMvc
+@EnableTransactionManagement
 @ComponentScan(basePackages = "com.trifecta.examples.heroku")
 public class SpringContext {
     
@@ -58,9 +68,7 @@ public class SpringContext {
         ConnectionFactoryBuilder factoryBuilder = new ConnectionFactoryBuilder();
         factoryBuilder.setProtocol(Protocol.BINARY);
         
-        //if( !new Boolean( System.getenv("MEMCACHE_SKIP_AUTHENTICATE") ).booleanValue() ) {
-            factoryBuilder.setAuthDescriptor(getMemcachedAuthDescriptor());
-        //}
+        factoryBuilder.setAuthDescriptor(getMemcachedAuthDescriptor());
         
         return factoryBuilder.build();
     }
@@ -98,8 +106,36 @@ public class SpringContext {
         return dataSource;
     }
 
+    @Bean
+    public PlatformTransactionManager txManager() throws URISyntaxException {
+        return new DataSourceTransactionManager(getDataSource());
+    }
+
     // End PostgreSQL DataSource Configuration
 
+    // Begin MyBatis Configuration
+    
+    @Bean
+    public SqlSessionFactoryBean getSqlSessionFactory() throws URISyntaxException, IOException {
+        SqlSessionFactoryBean sqlSessionFactoryBean = new SqlSessionFactoryBean();
+        sqlSessionFactoryBean.setDataSource(getDataSource());
+
+        PathMatchingResourcePatternResolver resourceResolver = new PathMatchingResourcePatternResolver();
+        Resource[] resolvers = resourceResolver.getResources("classpath*:com/trifecta/examples/heroku/mapper/**/*.xml");
+        sqlSessionFactoryBean.setMapperLocations( resolvers );
+
+        return sqlSessionFactoryBean;
+    }
+
+    @Bean
+    public MapperScannerConfigurer mapperScannerConfigurer() {
+        MapperScannerConfigurer mapperScannerConfigurer = new MapperScannerConfigurer();
+        mapperScannerConfigurer.setBasePackage("com.trifecta.examples.heroku.mapper");
+
+        return mapperScannerConfigurer;
+    }
+    
+    // End MyBatis Configuration
 
     // Begin RabbitMQ Configuration
 

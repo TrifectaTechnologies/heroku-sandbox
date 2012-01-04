@@ -1,7 +1,4 @@
 #!/bin/bash
-# export MEMCACHE_SERVERS="memcached.trifecta.com"
-# export MEMCACHE_USERNAME="cacheuser"
-# export MEMCACHE_PASSWORD="trifecta00"
 export MEMCACHE_SERVERS="localhost"
 export MEMCACHE_USERNAME="myname"
 export MEMCACHE_PASSWORD="mypass"
