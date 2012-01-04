@@ -146,7 +146,14 @@ public class SpringContext {
     
     @Bean
     public org.springframework.amqp.rabbit.connection.ConnectionFactory getRabbitConnectionFactory() throws NoSuchAlgorithmException, KeyManagementException, URISyntaxException {
-        org.springframework.amqp.rabbit.connection.ConnectionFactory connectionFactory = new CachingConnectionFactory(getAmqpUrl().getHost());
+        CachingConnectionFactory connectionFactory = new CachingConnectionFactory(getAmqpUrl().getHost(), getAmqpUrl().getPort());
+        if( getAmqpUrl().getUserInfo() != null ) {
+            connectionFactory.setUsername(getAmqpUrl().getUserInfo().split(":")[0]);
+            connectionFactory.setPassword(getAmqpUrl().getUserInfo().split(":")[1]);
+        }
+        if( getAmqpUrl().getPath() != null ) {
+            connectionFactory.setVirtualHost(getAmqpUrl().getPath());
+        }
         return connectionFactory;
     }
 
