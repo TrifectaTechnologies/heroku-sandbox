@@ -154,9 +154,9 @@ public class SpringContext {
             connectionFactory.setUsername(getAmqpUrl().getUserInfo().split(":")[0]);
             connectionFactory.setPassword(getAmqpUrl().getUserInfo().split(":")[1]);
         }
-        if( getAmqpUrl().getPath() != null ) {
-            log.info("RabbitMQ Virtual Host: "+getAmqpUrl().getPath());
-            connectionFactory.setVirtualHost(getAmqpUrl().getPath());
+        if( getAmqpUrl().getPath() != null && !getAmqpUrl().getPath().substring(1).trim().equals("")) {
+            log.info("RabbitMQ Virtual Host: "+getAmqpUrl().getPath().substring(1));
+            connectionFactory.setVirtualHost(getAmqpUrl().getPath().substring(1));
         }
         return connectionFactory;
     }
