@@ -128,7 +128,7 @@ public class SpringContext {
     }
 
     @Bean
-    public MapperScannerConfigurer mapperScannerConfigurer() {
+    public static MapperScannerConfigurer mapperScannerConfigurer() {
         MapperScannerConfigurer mapperScannerConfigurer = new MapperScannerConfigurer();
         mapperScannerConfigurer.setBasePackage("com.trifecta.examples.heroku.mapper");
 
@@ -147,16 +147,15 @@ public class SpringContext {
     @Bean
     public org.springframework.amqp.rabbit.connection.ConnectionFactory getRabbitConnectionFactory() throws NoSuchAlgorithmException, KeyManagementException, URISyntaxException {
 
-        log.info("RabbitMQ Server: "+getAmqpUrl().getHost()+":"+getAmqpUrl().getPort());
+        log.debug("RabbitMQ Server: "+getAmqpUrl().getHost()+":"+getAmqpUrl().getPort());
         CachingConnectionFactory connectionFactory = new CachingConnectionFactory(getAmqpUrl().getHost(), getAmqpUrl().getPort());
         if( getAmqpUrl().getUserInfo() != null ) {
-            log.info("RabbitMQ Credentials: "+getAmqpUrl().getUserInfo());
+            log.debug("RabbitMQ Credentials: "+getAmqpUrl().getUserInfo());
             connectionFactory.setUsername(getAmqpUrl().getUserInfo().split(":")[0]);
             connectionFactory.setPassword(getAmqpUrl().getUserInfo().split(":")[1]);
         }
         if( getAmqpUrl().getPath() != null && !getAmqpUrl().getPath().substring(1).trim().equals("")) {
-            log.info("RabbitMQ Virtual Host: "+getAmqpUrl().getPath());
-            log.info("RabbitMQ Virtual Host: "+getAmqpUrl().getPath().substring(1));
+            log.debug("RabbitMQ Virtual Host: "+getAmqpUrl().getPath().substring(1));
             connectionFactory.setVirtualHost(getAmqpUrl().getPath().substring(1));
         }
         return connectionFactory;

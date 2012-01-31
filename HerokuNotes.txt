@@ -50,7 +50,7 @@ Maven
 
 <!-- MemCache http://code.google.com/p/spymemcached/ -->
 <!-- Mac install brew:  /usr/bin/ruby -e "$(curl -fsSL https://raw.github.com/gist/323731)" -->
-<!-- Mac: brew install --enable-sasl memcached -->
+<!-- Mac: brew install --enable-sasl-pwdb --enable-sasl memcached -->
 <repositories>
   <repository>
     <id>spy</id>
